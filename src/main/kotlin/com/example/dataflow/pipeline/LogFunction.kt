@@ -4,12 +4,12 @@ import org.apache.beam.sdk.transforms.DoFn
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class DemoFunction: DoFn<String, String>() {
+class LogFunction: DoFn<String, String>() {
 
     @ProcessElement
     fun processElement(@Element recordName: String, context: ProcessContext) {
-        logger.info("DemoFunction processElement :: $recordName")
-        context.output("$recordName - processed")
+        logger.info("LogFunction processElement :: $recordName")
+        context.output(recordName)
     }
 
     companion object {
