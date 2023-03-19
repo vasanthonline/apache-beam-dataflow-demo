@@ -23,3 +23,5 @@
 hs_err_pid*
 /build/
 .idea/
+tokens/
+src/main/resources/pipeline/credentials

@@ -30,6 +30,9 @@ dependencies {
 	implementation("org.apache.beam:beam-sdks-java-core:2.46.0")
 	implementation("org.apache.beam:beam-sdks-java-io-google-cloud-platform:2.46.0")
 	implementation("org.apache.beam:beam-runners-google-cloud-dataflow-java:2.46.0")
+	implementation("com.google.api-client:google-api-client:2.0.0")
+	implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
+	implementation("com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")

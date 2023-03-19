@@ -1,6 +1,11 @@
 package com.example.dataflow.pipeline
 
+import com.example.dataflow.coder.JsonNodeCoder
+import com.example.dataflow.coder.JsonNodeCoderProvider
+import com.example.dataflow.config.GDriveConfig
+import com.example.dataflow.pipeline.gdrive.ListFilesFunction
 import org.apache.beam.sdk.Pipeline
+import org.apache.beam.sdk.coders.ListCoder
 import org.apache.beam.sdk.coders.StringUtf8Coder
 import org.apache.beam.sdk.options.PipelineOptionsFactory
 import org.apache.beam.sdk.transforms.Create
@@ -15,7 +20,7 @@ class DemoFeedPipeline {
         val pipeline: Pipeline = Pipeline.create(options)
         logger.info("DemoFeedPipeline created")
 
-        val words: List<String> = listOf("Sample", "Example")
+        val words: List<String> = listOf("Sample Run")
 
         pipeline
             .apply(
@@ -24,11 +29,11 @@ class DemoFeedPipeline {
             )
             .setCoder(StringUtf8Coder.of())
             .apply(
-            "Transform - Append to string",
-                ParDo.of(DemoFunction())
+            "Read Files from Google drive",
+                ParDo.of(ListFilesFunction())
             )
             .apply(
-                "Log output",
+                "Log file Id",
                 ParDo.of(LogFunction())
             )
 
@@ -43,8 +48,7 @@ class DemoFeedPipeline {
 
 
 fun main(args: Array<String>) {
-
-    val properties = ClassLoader.getSystemClassLoader().getResourceAsStream("pipeline/dev/demo.properties").use {
+    val properties = ClassLoader.getSystemClassLoader().getResourceAsStream("pipeline/" + System.getProperty("env") + "/demo.properties").use {
         Properties().apply {
             load(it)
         }
