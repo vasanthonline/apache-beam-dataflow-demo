@@ -2,9 +2,19 @@ package com.example.dataflow.pipeline
 
 import com.example.dataflow.coder.JsonNodeCoder
 import com.example.dataflow.coder.JsonNodeCoderProvider
+import com.example.dataflow.config.GCSConfig
 import com.example.dataflow.config.GDriveConfig
+import com.example.dataflow.models.DataFile
+import com.example.dataflow.pipeline.gcs.UploadFunction
+import com.example.dataflow.pipeline.gdrive.GetFilesFunction
 import com.example.dataflow.pipeline.gdrive.ListFilesFunction
+import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import org.apache.beam.sdk.Pipeline
+import org.apache.beam.sdk.coders.ByteArrayCoder
 import org.apache.beam.sdk.coders.ListCoder
 import org.apache.beam.sdk.coders.StringUtf8Coder
 import org.apache.beam.sdk.options.PipelineOptionsFactory
@@ -32,10 +42,17 @@ class DemoFeedPipeline {
             "Read Files from Google drive",
                 ParDo.of(ListFilesFunction())
             )
+            .setCoder(StringUtf8Coder.of())
             .apply(
-                "Log file Id",
-                ParDo.of(LogFunction())
+                "Download File from Google drive",
+                ParDo.of(GetFilesFunction())
             )
+            .setCoder(StringUtf8Coder.of())
+            .apply(
+                "Upload File to GCS",
+                ParDo.of(UploadFunction())
+            )
+            .setCoder(StringUtf8Coder.of())
 
         pipeline.run()
         logger.info("End Demo Feed Pipeline")
